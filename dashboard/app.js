@@ -1,14 +1,16 @@
 // GrimmGear Media Stack Dashboard
 // Matches *arr dark theme, aggregates all service APIs
 
+// All API calls go through the local proxy server (server.py) to avoid CORS.
+// Proxy routes: /api/{service}/{path} -> localhost:{port}/{path}
 const C = {
-    sonarr:   { url: 'http://localhost:8989',  api: '/api/v3', key: 'b1acb430d0f944979cf30acc71b37aab' },
-    radarr:   { url: 'http://localhost:7878',  api: '/api/v3', key: '9758af6105034dab9386cafae7cd7bd0' },
-    lidarr:   { url: 'http://localhost:8686',  api: '/api/v1', key: '0b700e40b5d7473a966d5e960db23770' },
-    readarr:  { url: 'http://localhost:8787',  api: '/api/v1', key: 'f228f06806ab4e6fb050a931f82fdfdf' },
-    prowlarr: { url: 'http://localhost:9696',  api: '/api/v1', key: '31b385bc73d14b5689d1833e585f633d' },
-    qbit:     { url: 'http://localhost:8081' },
-    plex:     { url: 'http://localhost:32400', token: 'wWABGKdq_AoBak3E2qd1' }
+    sonarr:   { url: '/api/sonarr',   api: '/api/v3', key: 'b1acb430d0f944979cf30acc71b37aab' },
+    radarr:   { url: '/api/radarr',   api: '/api/v3', key: '9758af6105034dab9386cafae7cd7bd0' },
+    lidarr:   { url: '/api/lidarr',   api: '/api/v1', key: '0b700e40b5d7473a966d5e960db23770' },
+    readarr:  { url: '/api/readarr',  api: '/api/v1', key: 'f228f06806ab4e6fb050a931f82fdfdf' },
+    prowlarr: { url: '/api/prowlarr', api: '/api/v1', key: '31b385bc73d14b5689d1833e585f633d' },
+    qbit:     { url: '/api/qbit' },
+    plex:     { url: '/api/plex', token: 'wWABGKdq_AoBak3E2qd1' }
 };
 
 const $ = id => document.getElementById(id);
@@ -33,9 +35,12 @@ async function api(svc, ep) {
     } catch { return null; }
 }
 
+const SVC_MAP = { 8989:'sonarr', 7878:'radarr', 8686:'lidarr', 8787:'readarr', 9696:'prowlarr', 8081:'qbit', 32400:'plex', 8191:'flaresolverr' };
 async function checkAlive(port, path) {
+    const svc = SVC_MAP[port];
+    if (!svc) return false;
     try {
-        const r = await fetch('http://localhost:' + port + (path || '/ping'), { signal: AbortSignal.timeout(3000) });
+        const r = await fetch('/api/' + svc + (path || '/ping'), { signal: AbortSignal.timeout(3000) });
         return r.ok || r.status === 401;
     } catch { return false; }
 }
@@ -137,11 +142,11 @@ async function refreshOverview() {
 
     // Downloads
     try {
-        const info = await (await fetch(C.qbit.url + '/api/v2/transfer/info', { signal: AbortSignal.timeout(3000) })).json();
+        const info = await (await fetch('/api/qbit/api/v2/transfer/info', { signal: AbortSignal.timeout(3000) })).json();
         txt('dl-speed', (info.dl_info_speed / 1048576).toFixed(1));
         txt('ul-speed', (info.up_info_speed / 1048576).toFixed(1));
 
-        const torrents = await (await fetch(C.qbit.url + '/api/v2/torrents/info', { signal: AbortSignal.timeout(5000) })).json();
+        const torrents = await (await fetch('/api/qbit/api/v2/torrents/info', { signal: AbortSignal.timeout(5000) })).json();
         txt('dl-count', torrents.length + ' active');
         const dlList = $('dl-list');
         clear(dlList);
@@ -219,7 +224,7 @@ async function refreshOverview() {
 
     // Plex
     try {
-        const pr = await fetch(C.plex.url + '/library/sections?X-Plex-Token=' + C.plex.token, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(3000) });
+        const pr = await fetch('/api/plex/library/sections?X-Plex-Token=' + C.plex.token, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(3000) });
         if (pr.ok) {
             const pd = await pr.json();
             const libs = pd.MediaContainer?.Directory || [];
