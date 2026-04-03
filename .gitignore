@@ -1,0 +1,17 @@
+# Build outputs
+**/bin/
+**/obj/
+**/.vs/
+**/node_modules/
+**/_output/
+**/packages/
+
+# IDE
+*.suo
+*.user
+*.sln.docstates
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
