@@ -1,10 +1,22 @@
 # GrimmGear rr-stack
 
-Open source improvements to the *arr media automation stack (Sonarr, Radarr, Readarr, Prowlarr).
+A community fork of the [*arr media automation stack](https://wiki.servarr.com/) with targeted improvements for language detection, fake prevention, import reliability, and indexer resilience.
 
-## What This Is
+## Acknowledgements
 
-12 targeted fixes for real-world problems discovered during production use of the *arr stack. Each fix traces to exact file paths, line numbers, and root cause analysis across 9,343 C# source files.
+This project is built on the outstanding work of the *arr community. We did not create these applications — we are contributing improvements back to them.
+
+- **[Sonarr](https://github.com/Sonarr/Sonarr)** — TV automation by the Sonarr team
+- **[Radarr](https://github.com/Radarr/Radarr)** — Movie automation, forked from Sonarr by the Radarr team
+- **[Lidarr](https://github.com/Lidarr/Lidarr)** — Music automation by the Lidarr team
+- **[Readarr](https://github.com/Readarr/Readarr)** — Book automation by the Readarr team
+- **[Prowlarr](https://github.com/Prowlarr/Prowlarr)** — Indexer management by the Prowlarr team
+
+All credit for the core applications belongs to these teams and their contributors. GrimmGear's role is patching specific pain points we encountered in production and contributing those fixes back to the community.
+
+## What This Fork Adds
+
+13 targeted fixes for real-world problems discovered during production use. Each fix traces to exact file paths, line numbers, and root cause analysis across 9,343 C# source files.
 
 ## Fixes Included
 
@@ -40,15 +52,20 @@ rr-stack/
 └── Lidarr/     # Fork of github.com/Lidarr/Lidarr (no changes yet)
 ```
 
+## Unified Dashboard
+
+The `dashboard/` directory contains a standalone monitoring UI that aggregates all *arr services into a single view. Built to match the native *arr dark theme. No dependencies — open `index.html` or serve via any HTTP server.
+
 ## Contributing
 
-All patches are designed to be submitted as upstream PRs to the original projects. Each fix is self-contained and testable.
+All patches are designed to be submitted as upstream PRs to the original projects. Each fix is self-contained and testable. If you find these useful, please consider contributing to the upstream projects directly.
 
 ## License
 
-All original code is GPL v3, matching the upstream projects.
+All original *arr code is GPL v3. Our additions are also GPL v3, matching the upstream license.
 
 ## Credits
 
-- **Richard Beukes** — GrimmGear Systems
-- Deep analysis by Claude Code (4 parallel agents, 9,343 files analyzed)
+- **[Sonarr](https://github.com/Sonarr/Sonarr)**, **[Radarr](https://github.com/Radarr/Radarr)**, **[Lidarr](https://github.com/Lidarr/Lidarr)**, **[Readarr](https://github.com/Readarr/Readarr)**, **[Prowlarr](https://github.com/Prowlarr/Prowlarr)** — the original teams and all their contributors
+- **Richard Beukes** — GrimmGear Systems (patch author)
+- **Claude Code** — deep codebase analysis (4 parallel agents, 9,343 files)
