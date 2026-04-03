@@ -31,8 +31,12 @@ GrimmGear replaces **24+ separate applications** with a single unified system:
 | **Dashboard** | Homarr/Homepage | 32,700 |
 | **Audiobook Server** | Audiobookshelf | 12,300 |
 | **Reading Server** | Kavita | 10,200 |
+| **Media Server** | Jellyfin/Plex (optional) | 37,000 |
 | **Tracking** | Trakt/Yamtrack | 2,400 |
-| **Total** | **24+ tools** | **~150,000 stars** |
+| **Chat Bots** | Requestrr + Botdarr + Doplarr | 1,800 |
+| **Watchlist Sync** | Pulsarr + Watchlistarr | 800 |
+| **Vote System** | Ombi | 4,100 |
+| **Total** | **30+ tools** | **~200,000 stars** |
 
 ---
 
@@ -94,12 +98,23 @@ GrimmGear replaces **24+ separate applications** with a single unified system:
 │  └─────────────────────────────────────────────────────┘   │
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐   │
+│  │              Built-in Media Server                   │   │
+│  │  • DLNA/UPnP server (auto-discovery on smart TVs)   │   │
+│  │  • HLS web player (adaptive bitrate streaming)      │   │
+│  │  • On-the-fly FFmpeg transcoding (when needed)      │   │
+│  │  • Built-in audio player + Smart Radio              │   │
+│  │  • Built-in readers (EPUB, PDF, CBZ, webtoon)       │   │
+│  │  • Chromecast support                               │   │
+│  │  • Offline download (PWA service worker)            │   │
+│  │  • Cross-device progress sync (WebSocket)           │   │
+│  │  • Optional: connect Plex/Jellyfin/Emby instead     │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
 │  │                    Dashboard/UI                      │   │
 │  │  • Svelte 5 + TypeScript SPA                        │   │
 │  │  • Drag-and-drop widget system (Homarr-style)       │   │
 │  │  • Universal search across all media types           │   │
-│  │  • Per-format readers (ebook, comic, webtoon)       │   │
-│  │  • Built-in media player (audio + video preview)    │   │
 │  │  • Calendar (upcoming releases across all types)     │   │
 │  │  • Responsive mobile web (PWA installable)          │   │
 │  │  • Real-time WebSocket updates                      │   │
@@ -107,8 +122,8 @@ GrimmGear replaces **24+ separate applications** with a single unified system:
 │  └─────────────────────────────────────────────────────┘   │
 │                                                             │
 │  External Connections (API key boundary):                    │
-│  qBittorrent • Plex • Jellyfin • Emby • slskd             │
-│  Trakt • Spotify • Last.fm • ListenBrainz                  │
+│  qBittorrent • Plex/Jellyfin/Emby (optional) • slskd      │
+│  Trakt • Spotify • Last.fm • ListenBrainz • Chromecast    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -194,14 +209,54 @@ GrimmGear replaces **24+ separate applications** with a single unified system:
 - Format normalization (h264→h265, container remuxing)
 - Scheduled processing with stall detection
 
-### Request Module (replaces Seerr)
-- TMDB-powered browse and discovery
-- User request with admin approval workflow
-- Auto-fulfill via arr modules
-- Request quotas per user
-- Trending/popular/upcoming sections
-- AI recommendations (local LLM via Ollama)
-- Inline "already in library" indicators
+### Request Module (replaces Seerr + Ombi + Requestrr)
+- TMDB-powered browse and discovery (trending, popular, upcoming)
+- Customizable discover sliders (drag-and-drop reorder, toggle visibility)
+- User request lifecycle: PENDING → APPROVED → PROCESSING → AVAILABLE
+- Admin approval workflow with override rules (auto-select by genre/language/keyword)
+- Vote-based community approval (Ombi pattern — configurable vote threshold)
+- Request quotas per user (rolling time windows, separate for movies/TV/music)
+- Auto-fulfill via internal modules (no external API calls)
+- 4K + standard quality separation with routing rules
+- Issue reporting: users report bad audio/video/subtitles, admin reviews
+- User reviews visible to community (Petio pattern)
+- Newsletter: periodic email digest of new additions (Ombi pattern)
+- AI recommendations via local LLM (Ollama — Llama3, Mistral, Phi-3)
+- Content-based filtering (TF-IDF, zero cloud — LocalRecs pattern)
+- "Because You Watched" personalized sections
+- Inline "already in library" indicators (nzb360 pattern)
+- Landing page with server status + custom messages
+- Multi-platform bots: Discord + Telegram + Slack + Matrix (Botdarr pattern)
+- 80+ notification services via Apprise integration
+
+### Streaming Module (built-in media server — NO Plex required)
+- **DLNA/UPnP server**: Auto-discovery on smart TVs, game consoles, Roku.
+  Every device on the network sees the library without installing anything.
+- **HLS web player**: Adaptive bitrate streaming in any browser.
+  Fast network = full quality. Slow = auto-downgrades. Subtitles overlay.
+- **On-the-fly transcoding**: FFmpeg converts incompatible formats in real-time.
+  Direct play when possible (90% of modern devices), transcode only when needed.
+- **Built-in audio player**: Queue system, Smart Radio (genre/mood auto-queue),
+  Web Audio visualizer, keyboard shortcuts, Media Session API.
+  Scrobbling to Last.fm/ListenBrainz.
+- **Built-in readers**: Per-format optimized (Kavita pattern):
+  - EPUB: reflowable text with custom fonts/themes
+  - PDF: native rendering with zoom
+  - CBZ/CBR: comic reader with page-turn animation
+  - Webtoon: continuous vertical scroll mode for manga
+  - Annotation sharing between users + Obsidian export
+- **Chromecast support**: Cast from web player to any Chromecast device
+- **Offline download**: PWA service worker caches content for offline playback/reading
+- **Cross-device sync**: WebSocket-based progress sync (Audiobookshelf pattern).
+  Start on phone, continue on TV, finish on laptop. Seamless resume.
+- **Send-to-device**: Send ebooks to Kindle, audiobooks to phone
+- **Library browsing**: Cover art grid, metadata, ratings, trailers
+- **Watch tracking**: Built-in diary with ratings (Letterboxd pattern),
+  analytics dashboard (most-watched actors/genres/directors)
+- **User profiles**: Each user gets their own progress, watchlist, ratings,
+  continue watching, recommendations
+- **Optional**: Toggle OFF and connect Plex/Jellyfin/Emby instead
+  for native TV apps and advanced transcoding
 
 ### Indexer Module (replaces Prowlarr)
 - Built-in indexer management (no separate app)
@@ -281,11 +336,11 @@ GrimmGear replaces **24+ separate applications** with a single unified system:
    ○ SABnzbd / NZBGet (Usenet)
    ○ slskd (Soulseek — for music)
 
-4. Media server (optional)
-   ○ Plex (auto-detect token from registry)
-   ○ Jellyfin
-   ○ Emby
-   ○ None
+4. Media server
+   ○ Use built-in streaming (DLNA + web player — recommended)
+   ○ Connect to Plex (auto-detect token from registry)
+   ○ Connect to Jellyfin
+   ○ Connect to Emby
 
 5. Streaming services (for availability checking)
    □ Netflix  □ Disney+  □ Prime  □ HBO/Max  □ Apple TV+
@@ -310,40 +365,60 @@ GrimmGear replaces **24+ separate applications** with a single unified system:
 
 ## Phase Roadmap
 
-### Phase 1: Core + Movies + TV (MVP)
-- FastAPI backend + Svelte frontend
-- Unified database schema
-- Decision engine with GrimmGear patches
-- Movies module (TMDB)
-- TV module (TVDB)
-- Built-in indexer management
+### Phase 1: Core + Movies + TV + Streaming (MVP)
+- FastAPI backend + Svelte 5 frontend
+- Unified database schema (PostgreSQL + SQLite)
+- Decision engine with GrimmGear patches (all 14 fixes)
+- Movies module (TMDB metadata, multi-version/edition)
+- TV module (TVDB metadata, anime season packs)
+- Built-in indexer management (replaces Prowlarr)
 - qBittorrent integration
-- Setup wizard
-- Dashboard
+- **DLNA/UPnP server** (smart TVs see library immediately)
+- **HLS web player** (watch in any browser)
+- Setup wizard (Windows installer + Docker)
+- Dashboard with drag-and-drop widgets
+- User auth (local + OIDC)
 
-### Phase 2: Music + Discovery
-- Music module with multi-source downloads
-- AcoustID + fake lossless detection
-- Track-level management
-- Discovery playlists
-- Streaming availability checking
-- AI recommendations (Ollama)
+### Phase 2: Music + Discovery + Requests
+- Music module (track-level, 6 download sources, AcoustID)
+- Fake lossless detection
+- Discovery playlists (Release Radar, Discovery Weekly)
+- Mirrored playlists from Spotify/Tidal
+- Built-in audio player + Smart Radio
+- Streaming availability checking (JustWatch/Watchmode)
+- Request module with approval workflows + voting
+- AI recommendations via Ollama
+- Newsletter digest of new additions
 
-### Phase 3: Books + Comics + Reading
-- Books module (5 metadata sources)
-- OPDS server
-- Built-in readers (EPUB, PDF, CBZ, webtoon)
-- Audiobookshelf-style progress sync
-- Comics with story arc tracking
+### Phase 3: Books + Comics + Readers
+- Books module (5 metadata sources, NOT bookinfo.club)
+- OPDS server for mobile readers
+- Built-in readers (EPUB, PDF, CBZ, webtoon scroll mode)
+- Audiobook streaming + cross-device progress sync
+- Comics with story arc tracking + Comic Vine metadata
+- Send-to-Kindle
+- Annotation sharing + Obsidian export
 
-### Phase 4: Enterprise Features
-- OIDC/SSO authentication
-- Multi-user with roles and quotas
-- Request management with approval workflows
-- Subtitle automation
-- Transcode workers
-- Plugin architecture
-- Mobile PWA
+### Phase 4: Smart Features + Scale
+- On-the-fly FFmpeg transcoding (when device can't direct play)
+- Chromecast casting from web player
+- Offline download (PWA service worker)
+- Subtitle automation (50+ providers, 184 languages)
+- Distributed transcode workers (Tdarr pattern)
+- Automated cleanup with "Leaving Soon" UX
+- Cross-seeding automation
+- Watch tracking analytics (actors, genres, trends)
+- Dynamic collections + poster overlays
+
+### Phase 5: Ecosystem
+- HTTP plugin architecture (any language can extend)
+- Multi-platform bots (Discord, Telegram, Slack, Matrix)
+- QR code user invites
+- Mobile PWA with offline playback
+- Prometheus metrics endpoint
+- IRC real-time announce monitoring (autobrr pattern)
+- Library Profiles (virtual filtered views)
+- Filler episode marking for anime
 
 ---
 
