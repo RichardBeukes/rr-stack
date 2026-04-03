@@ -50,5 +50,5 @@ All original code is GPL v3, matching the upstream projects.
 
 ## Credits
 
-- **Richard Beukes** — GrimmGear Systems / GZ Industries IT
+- **Richard Beukes** — GrimmGear Systems
 - Deep analysis by Claude Code (4 parallel agents, 9,343 files analyzed)
